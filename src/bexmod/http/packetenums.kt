@@ -5,7 +5,17 @@ enum class Method(val method: String) {
     HEAD("HEAD"),
     POST("POST"),
     PUT("PUT"),
-    UNINITIALIZED("UNINITIALIZED")
+    UNINITIALIZED("UNINITIALIZED");
+
+    fun from(m: String): Method {
+        return when (m) {
+            "GET" -> GET
+            "HEAD" -> HEAD
+            "POST" -> POST
+            "PUT" -> PUT
+            else -> UNINITIALIZED
+        }
+    }
 }
 
 enum class Version(val version: String) {
@@ -22,12 +32,7 @@ enum class Version(val version: String) {
     }
 }
 
-data class Resource(val value: String) {
-    private val path: String
-    init {
-        if (value == "..") throw IllegalArgumentException("404")
-        path = value
-    }
+data class Resource(private val path: String) {
 
     fun getPath(): String {
         return path
