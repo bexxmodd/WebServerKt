@@ -314,18 +314,18 @@ public class HW1Test extends GenericTest {
     Set<String> tests = new TreeSet<String>();
     if (args.length == 0) {
     	tests.add("req");
-    	tests.add("persist");
-    	tests.add("err400");
-    	tests.add("err404");
-      tests.add("err405");
-    	tests.add("err501");
-    	tests.add("err505");
-    	tests.add("withbody");
-    	tests.add("connclose");
-    	tests.add("text");
-    	tests.add("binary");
-    	tests.add("multi");
-    	tests.add("stress");
+//    	tests.add("persist");
+//    	tests.add("err400");
+//    	tests.add("err404");
+//        tests.add("err405");
+//    	tests.add("err501");
+//    	tests.add("err505");
+//    	tests.add("withbody");
+//    	tests.add("connclose");
+//    	tests.add("text");
+//    	tests.add("binary");
+//    	tests.add("multi");
+//    	tests.add("stress");
     } else {
     	for (int i=0; i<args.length; i++)
     		tests.add(args[i]);
