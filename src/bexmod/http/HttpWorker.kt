@@ -1,11 +1,14 @@
 package bexmod.http
 
+import bexmod.webserver.Router
 import java.net.Socket
 
-import bexmod.webserver.Router
+class HttpWorker(
+    private val socket: Socket,
+    private val request: String
+) : Runnable {
 
-class HttpWorker(private val socket: Socket, private val request: String) {
-    fun run() {
+    override fun run() {
         val httpRequest = HttpRequest(request)
         Router.route(httpRequest, socket)
     }

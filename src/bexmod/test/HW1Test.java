@@ -1,4 +1,4 @@
-package cis5550.test;
+package bexmod.test;
 
 import java.util.*;
 import java.nio.file.*;
@@ -8,20 +8,20 @@ import java.net.*;
 public class HW1Test extends GenericTest {
 
   void cleanup() {
-    File a = new File("test/file1.txt"), b = new File("test/file2.txt"), c = new File("test/file3.txt"), d = new File("test/binary");
+    File a = new File("tmpRes/file1.txt"), b = new File("tmpRes/file2.txt"), c = new File("tmpRes/file3.txt"), d = new File("tmpRes/binary");
     a.delete();
     b.delete();
     c.delete();
     d.delete();
 
-    File subdir = new File("test");
+    File subdir = new File("tmpRes");
     subdir.delete();
   }
 
   void runTests(Set<String> tests) throws Exception {
     /* Check whether the test directory already exists. We don't want to accidentally overwrite anything. */
 
-    Path path = Paths.get("test");
+    Path path = Paths.get("tmpRes");
     if (Files.exists(path)) {
       System.err.println("A directory or file with the name 'test' already exists. Please delete or rename this before running the test suite, or run the tests in a different directory.");
       System.exit(1);
@@ -29,22 +29,22 @@ public class HW1Test extends GenericTest {
 
     /* Create the test files */
 
-    File subdir = new File("test");
+    File subdir = new File("tmpRes");
     subdir.mkdir();
 
-    PrintWriter p = new PrintWriter("test/file1.txt");
+    PrintWriter p = new PrintWriter("tmpRes/file1.txt");
     p.println("Well done is better than well said.");
     p.close();
 
-    p = new PrintWriter("test/file2.txt");
+    p = new PrintWriter("tmpRes/file2.txt");
     p.println("No gains without pains.");
     p.close();
 
-    p = new PrintWriter("test/file3.txt");
+    p = new PrintWriter("tmpRes/file3.txt");
     p.println("Lost time is never found again.");
     p.close();
 
-    FileOutputStream fos = new FileOutputStream("test/binary");
+    FileOutputStream fos = new FileOutputStream("tmpRes/binary");
     for (int i=0; i<256; i++)
       fos.write(i);
     fos.close();
@@ -314,18 +314,18 @@ public class HW1Test extends GenericTest {
     Set<String> tests = new TreeSet<String>();
     if (args.length == 0) {
     	tests.add("req");
-//    	tests.add("persist");
-//    	tests.add("err400");
-//    	tests.add("err404");
-//        tests.add("err405");
-//    	tests.add("err501");
-//    	tests.add("err505");
-//    	tests.add("withbody");
-//    	tests.add("connclose");
-//    	tests.add("text");
+    	tests.add("persist");
+    	tests.add("err400");
+    	tests.add("err404");
+        tests.add("err405");
+    	tests.add("err501");
+    	tests.add("err505");
+    	tests.add("withbody");
+    	tests.add("connclose");
+    	tests.add("text");
 //    	tests.add("binary");
-//    	tests.add("multi");
-//    	tests.add("stress");
+    	tests.add("multi");
+    	tests.add("stress");
     } else {
     	for (int i=0; i<args.length; i++)
     		tests.add(args[i]);

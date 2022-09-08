@@ -1,25 +1,27 @@
 package bexmod.http
 
 import java.util.*
-import kotlin.collections.HashMap
+
 
 class HttpResponse() {
-    var version = Version.V1_1
+    private var version = Version.V1_1
     private var statusCode = 200
     private var statusText = "Success"
-    var headers: Optional<SortedMap<String, String>> = Optional.empty()
+    var headers: SortedMap<String, String> = sortedMapOf()
     var body: Optional<String> = Optional.empty()
+
 
     constructor(status: Int) : this() {
         if (status != 200) {
             statusCode = status
             statusText = statusTextFrom(status)
         }
+        headers["Content-Length"] = "0"
     }
 
     constructor(
         status: Int,
-        rspHeaders: Optional<SortedMap<String, String>>,
+        rspHeaders: SortedMap<String, String>,
         rspBody: Optional<String>
     ) : this() {
         if (status != 200) {
@@ -31,29 +33,26 @@ class HttpResponse() {
             body = rspBody
         }
 
-        if (rspHeaders.isPresent) {
-            headers = rspHeaders
-            headers.get()["Content-Length"] =
-                (if (body.isPresent) body.get().length else 0).toString()
-        }
+        headers = rspHeaders
+        headers["Content-Length"] =
+            (if (body.isPresent) body.get().length else 0).toString()
     }
 
     override fun toString(): String {
+//        println("Returning::> ${body.get()}")
         return "${version.version} $statusCode $statusText\r\n" +
                 "${headersAsStrings()}\r\n" +
-                if (body.isPresent) body.get() + "\r\n\r\n" else ""
+                if (body.isPresent) body.get() else ""
     }
 
     private fun headersAsStrings(): String {
         val sb = StringBuilder()
-        headers.ifPresent {
-            it.forEach {
-                (k, v) ->
-                    sb.append(k)
-                    sb.append(": ")
-                    sb.append(v)
-                    sb.append("\r\n")
-            }
+        headers.forEach {
+            (k, v) ->
+                sb.append(k)
+                sb.append(": ")
+                sb.append(v)
+                sb.append("\r\n")
         }
         return sb.toString()
     }
