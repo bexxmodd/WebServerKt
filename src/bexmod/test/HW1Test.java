@@ -302,6 +302,26 @@ public class HW1Test extends GenericTest {
       testSucceeded();
     }
 
+    if (tests.contains("ec-modif")) {
+      startTest("ec-modif", "Test If-Modified-Since header");
+      Socket s = openSocket(8000);
+      PrintWriter out = new PrintWriter(s.getOutputStream());
+      out.print("GET /file1.txt HTTP/1.1\r\nIf-Modified-Since: Mon, 13 Oct 2015 02:28:20 GMT\r\n\r\n");
+      out.flush();
+      Response r = readAndCheckResponse(s, "response");
+      if (r.statusCode != 200)
+        testFailed("The server was supposed to return a 200 Success, but it actually returned at "+r.statusCode);
+      out.print("GET /file1.txt HTTP/1.1\r\nIf-Modified-Since: Wed, 21 Oct 2022 07:28:00 GMT\r\n\r\n");
+      out.flush();
+      r = readAndCheckResponse(s, "response");
+      if (r.statusCode != 304)
+        testFailed("The server was supposed to return a 304 Not Modified, but it actually returned at "+r.statusCode);
+      s.shutdownOutput();
+      assertClosed(s, "The server was supposed to close the connection when the client closed its end, but it looks like it has not.", "The server seems to be sending more data after the end of the response! You may want to check your Content-Length header.");
+      testSucceeded();
+    }
+
+
     System.out.println("--------------------------------------------------------\n");
     System.out.println("Looks like your solution passed all of the selected tests. Congratulations!");
     cleanup();
@@ -326,6 +346,7 @@ public class HW1Test extends GenericTest {
 //    	tests.add("binary");
     	tests.add("multi");
     	tests.add("stress");
+        tests.add("ec-modif");
     } else {
     	for (int i=0; i<args.length; i++)
     		tests.add(args[i]);

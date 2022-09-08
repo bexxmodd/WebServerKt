@@ -50,7 +50,7 @@ class HttpRequest(request: String) {
     }
 
     private fun processHeader(line: String): Pair<String, String> {
-        val pcs = line.split(":")
+        val pcs = line.split(":", limit = 2)
         return if (pcs.size > 1) Pair(pcs[0], pcs[1].trim()) else Pair(pcs[0], "")
     }
 }
