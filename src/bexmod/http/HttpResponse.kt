@@ -1,14 +1,16 @@
 package bexmod.http
 
+import bexmod.WebLogger
+import java.io.OutputStream
 import java.util.*
-
+import java.util.logging.Level
 
 class HttpResponse() {
     private var version = Version.V1_1
     private var statusCode = 200
     private var statusText = "Success"
-    var headers: SortedMap<String, String> = sortedMapOf()
-    var body: Optional<String> = Optional.empty()
+    private var headers: SortedMap<String, String> = sortedMapOf()
+    private var body: Optional<String> = Optional.empty()
 
 
     constructor(status: Int) : this() {
@@ -39,7 +41,6 @@ class HttpResponse() {
     }
 
     override fun toString(): String {
-//        println("Returning::> ${body.get()}")
         return "${version.version} $statusCode $statusText\r\n" +
                 "${headersAsStrings()}\r\n" +
                 if (body.isPresent) body.get() else ""
@@ -55,5 +56,13 @@ class HttpResponse() {
                 sb.append("\r\n")
         }
         return sb.toString()
+    }
+
+    fun sendResponse(stream: OutputStream) {
+        val rsp = this.toString()
+        WebLogger.LOG.log(
+            Level.INFO,
+            "Returning Rsp: ${version.version} $statusCode $statusText")
+        stream.write(rsp.toByteArray())
     }
 }

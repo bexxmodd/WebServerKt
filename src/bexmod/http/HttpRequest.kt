@@ -1,5 +1,8 @@
 package bexmod.http
 
+import bexmod.WebLogger
+import java.util.logging.Level
+
 class HttpRequest(request: String) {
     var method = Method.UNINITIALIZED
         private set
@@ -25,7 +28,7 @@ class HttpRequest(request: String) {
                         resource = r
                         isBadRequest = false
                     } catch (e: Exception) {
-                        println("ERROR: while parsing request line -> $e")
+                        WebLogger.LOG.log(Level.SEVERE, "can't parse request line -> $e")
                     }
                 } else if (it.contains(":")) {
                     val (key, value) = processHeader(it)
@@ -41,7 +44,7 @@ class HttpRequest(request: String) {
         if (pcs.size != 3) {
             throw IllegalArgumentException("Check Request Line")
         }
-
+        WebLogger.LOG.log(Level.INFO, "Request Line: $line")
         return Triple(
             Method.from(pcs[0]),
             Version.from(pcs[2]),
