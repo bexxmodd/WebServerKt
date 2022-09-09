@@ -22,10 +22,11 @@ class Server(private val port: Int) {
 }
 
 fun main(args: Array<String>) {
-    if (args.size < 2) {
+    if (args.isEmpty()) {
+        WebLogger.LOG.log(Level.SEVERE,
+            "Port number where Socker Server should run is not supplied")
         throw IllegalArgumentException("Please provide Port number");
     }
     val portNumber: Int = args[0].toInt()
-    val dir = args[1]
     Server(portNumber).run()
 }
