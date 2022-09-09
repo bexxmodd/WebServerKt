@@ -12,3 +12,6 @@ This is how you can request home page (Assuming that server listens on port 8000
 ```bash
 curl localhost:8000/index.html
 ```
+
+
+![Alt text](https://imgur.com/hHic9nv.png "localhost")
