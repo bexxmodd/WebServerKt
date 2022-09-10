@@ -4,6 +4,7 @@ import bexmod.WebLogger
 import bexmod.http.HttpRequest
 import bexmod.http.HttpResponse
 import bexmod.http.HttpWorker
+import bexmod.http.Method
 import bexmod.http.Version
 import java.io.BufferedReader
 import java.io.File
@@ -65,30 +66,33 @@ class StaticPageHandler : Handler {
     private val STATIC = "static"
 
     override fun handle(req: HttpRequest): HttpResponse {
-        WebLogger.LOG.log(Level.INFO, "Static Page Request")
+        WebLogger.LOG.log(Level.INFO, "Received ${req.method} Request")
         if (req.isBadRequest) return HttpResponse(400)
         if (req.resource.path == "..") return HttpResponse(403)
         if (req.version != Version.V1_1) return HttpResponse(505)
 
         val routes = req.resource.path.split("/")
-        val path = routes[1]
+        val path = routes[1].ifBlank { "index.html" }
         val headers = sortedMapOf<String, String>()
         return when (path) {
-            "" -> HttpResponse(200, headers, Handler.loadFile("Resources/$STATIC/index.html"))
             "health" -> HttpResponse(200)
             path -> {
                 if (Handler.loadFile("Resources/$STATIC/$path").isPresent) {
-                    if (path.endsWith(".html"))
-                        headers["Content-Type"] = "text/html"
+                    val ext = path.split(".")
+                    when (ext[ext.size - 1]) {
+                        "html" -> headers["Content-Type"] = "text/html"
+                        "css" -> headers["Content-Type"] = "text/css"
+                        "js" -> headers["Content-Type"] = "text/javascript"
+                        "txt" -> headers["Content-Type"] = "text/plain"
+                        "jpeg", "jpg" -> headers["Content-Type"] = "media/image"
+                        else -> headers["Content-Type"] = "application/octet-stream"
+                    }
 
-                    if (path.endsWith(".css"))
-                        headers["Content-Type"] = "text/css"
-
-                    if (path.endsWith(".js"))
-                        headers["Content-Type"] = "text/javascript"
-
-                    HttpResponse(200, headers, Handler.loadFile("Resources/$STATIC/$path"))
-                } else HttpResponse(404, headers, Handler.loadFile("Resources/$STATIC/404.html"))
+                    HttpResponse(200, headers, Handler.loadFile("Resources/$STATIC/$path"), req.method == Method.HEAD)
+                } else {
+                    headers["Content-Type"] = "text/html"
+                    HttpResponse(404, headers, Handler.loadFile("Resources/$STATIC/404.html"))
+                }
             }
             else -> HttpResponse(200)
         }

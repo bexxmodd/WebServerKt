@@ -10,8 +10,7 @@ class Router  {
         @JvmStatic
         fun route(req: HttpRequest, socket: Socket) {
             val rsp = when (req.method) {
-                Method.HEAD -> null
-                Method.GET -> {
+                Method.HEAD, Method.GET -> {
                     val routes = req.resource.path.split("/")
                     when (routes[0]) {
                         "" -> StaticPageHandler().handle(req)
