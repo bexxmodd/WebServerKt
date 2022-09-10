@@ -84,6 +84,7 @@ class StaticPageHandler : Handler {
                         "css" -> headers["Content-Type"] = "text/css"
                         "js" -> headers["Content-Type"] = "text/javascript"
                         "txt" -> headers["Content-Type"] = "text/plain"
+                        "pdf" -> headers["Content-Type"] = "text/pdf"
                         "jpeg", "jpg" -> headers["Content-Type"] = "media/image"
                         else -> headers["Content-Type"] = "application/octet-stream"
                     }
