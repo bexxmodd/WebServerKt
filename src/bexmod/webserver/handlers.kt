@@ -3,19 +3,15 @@ package bexmod.webserver
 import bexmod.WebLogger
 import bexmod.http.HttpRequest
 import bexmod.http.HttpResponse
-import bexmod.http.HttpWorker
 import bexmod.http.Method
 import bexmod.http.Version
-import java.io.BufferedReader
+
 import java.io.File
-import java.io.InputStreamReader
-import java.net.Socket
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.Executors
+import java.util.Optional
+import java.util.Date
 import java.util.logging.Level
-
 
 
 interface Handler {

@@ -1,7 +1,9 @@
 package bexmod.http
 
 import bexmod.WebLogger
+
 import java.util.logging.Level
+
 
 class HttpRequest(request: String) {
     var method = Method.UNINITIALIZED
