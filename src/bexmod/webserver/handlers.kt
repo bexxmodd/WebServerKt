@@ -16,36 +16,7 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.logging.Level
 
-class ConnectionHandler(private val socket: Socket) : Runnable {
-    override fun run() {
-        WebLogger.LOG.log(Level.INFO,
-            "Accepted connection from: ${socket.inetAddress.hostAddress}:${socket.port}")
-        val poolExecutor = Executors.newFixedThreadPool(Server.N_THREADS)
 
-        val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
-        val buffer = StringBuilder()
-
-        var bytesRead: Int
-        val data = CharArray(16384)
-        while (!socket.isInputShutdown) {
-            bytesRead = reader.read(data, 0, data.size)
-            if (bytesRead == -1) {
-                socket.shutdownOutput()
-                WebLogger.LOG.log(Level.WARNING, "Shutting down output on : $socket")
-                break
-            }
-
-            for (i in 0 until bytesRead)
-                buffer.append(data[i])
-
-            if (buffer.contains("\r\n\r\n"))
-                poolExecutor.execute(HttpWorker(socket, buffer.toString()))
-        }
-        WebLogger.LOG.log(Level.WARNING,
-            "Closing connection with ${socket.inetAddress.hostAddress}:${socket.port}")
-        socket.close()
-    }
-}
 
 interface Handler {
 

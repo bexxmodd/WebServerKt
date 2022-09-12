@@ -23,7 +23,7 @@ class Router  {
                 Method.UNINITIALIZED -> if (req.isBadRequest) HttpResponse(400) else HttpResponse(501)
             }
 
-            rsp?.sendResponse(socket.getOutputStream())
+            rsp?.let { socket.getOutputStream().sendResponse(it) }
         }
     }
 }

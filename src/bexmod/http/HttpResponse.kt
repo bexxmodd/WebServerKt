@@ -1,21 +1,18 @@
 package bexmod.http
 
-import bexmod.WebLogger
-import java.io.OutputStream
 import java.util.*
-import java.util.logging.Level
 
 class HttpResponse() {
-    private var version = Version.V1_1
-    private var statusCode = 200
-    private var statusText = "Success"
-    private var headers: SortedMap<String, String>
+    var version = Version.V1_1
+    var statusCode = 200
+    var statusText = "Success"
+    var headers: SortedMap<String, String>
         = sortedMapOf(
             "Content-Type" to "application/octet-stream",
             "Content-Length" to "0",
             "Server" to "Bexx@${System.getProperty("os.name")}"
         )
-    private var body: Optional<String> = Optional.empty()
+    var body: Optional<String> = Optional.empty()
     private var onlyHead = false
 
 
@@ -65,13 +62,5 @@ class HttpResponse() {
                 sb.append("\r\n")
         }
         return sb.toString()
-    }
-
-    fun sendResponse(stream: OutputStream) {
-        val rsp = this.toString()
-        WebLogger.LOG.log(
-            Level.INFO,
-            "\n\t\tResponse Line: ${version.version} $statusCode $statusText\n\t\tHeaders: $headers\n")
-        stream.write(rsp.toByteArray())
     }
 }
